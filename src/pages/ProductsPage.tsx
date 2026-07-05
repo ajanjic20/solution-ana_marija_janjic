@@ -484,11 +484,18 @@ export function ProductsPage() {
         </section>
 
         {isLoading ? (
-          <p className="mb-8 text-center text-slate-600">
+          <p
+            className="mb-8 text-center text-slate-600"
+            role="status"
+            aria-live="polite"
+          >
             Učitavanje proizvoda...
           </p>
         ) : error ? (
-          <div className="mb-8 border border-red-200 bg-red-50 p-5 text-center">
+          <div
+            className="mb-8 border border-red-200 bg-red-50 p-5 text-center"
+            role="alert"
+          >
             <p className="font-semibold text-red-700">{error}</p>
 
             <button
@@ -518,7 +525,10 @@ export function ProductsPage() {
             </button>
           </div>
         ) : (
-          <p className="mb-6 text-sm text-slate-600">
+          <p
+            className="mb-6 text-sm text-slate-600"
+            aria-live="polite"
+          >
             Prikazano <strong>{products.length}</strong> od{" "}
             <strong>{filteredProducts.length}</strong> proizvoda
           </p>
@@ -529,14 +539,14 @@ export function ProductsPage() {
             {products.map((product) => (
               <article
                 key={product.id}
-                className="group relative overflow-hidden rounded-sm border border-slate-200 bg-white text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md"
+                className="group relative overflow-hidden rounded-sm border border-slate-200 bg-white text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md hover:ring-2 hover:ring-blue-100 focus-within:-translate-y-0.5 focus-within:border-slate-300 focus-within:bg-slate-50 focus-within:shadow-md focus-within:ring-2 focus-within:ring-blue-100"
               >
                 <FavoriteButton product={product} />
 
                 <Link
                   to={getProductDetailsPath(product.id)}
                   onClick={saveScrollPosition}
-                  className="block focus-visible:outline-2 focus-visible:outline-blue-600"
+                  className="block outline-none"
                 >
                   <div className="border-b border-slate-100 bg-white">
                     <img

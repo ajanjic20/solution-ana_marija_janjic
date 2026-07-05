@@ -46,6 +46,7 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 pt-8 sm:px-6 lg:px-8">
         <Link
           to="/products"
+          aria-label="Povratak na katalog proizvoda"
           className="text-slate-950 transition hover:text-blue-600 focus-visible:outline-2 focus-visible:outline-blue-600"
         >
           {isProductsPage ? (
@@ -60,8 +61,11 @@ export function Header() {
         </Link>
 
         {isAuthenticated && user ? (
-          <div className="flex flex-wrap justify-end gap-2 sm:gap-3">
-            <span className="hidden text-sm text-slate-600 sm:block">
+          <nav
+            aria-label="Korisnički izbornik"
+            className="flex flex-wrap justify-end gap-2 sm:gap-3"
+          >
+            <span className="hidden self-center text-sm text-slate-600 sm:block">
               Bok, {user.firstName}
             </span>
 
@@ -79,15 +83,17 @@ export function Header() {
             >
               Odjava
             </button>
-          </div>
+          </nav>
         ) : !isLoginPage ? (
-          <Link
-            to={loginPath}
-            onClick={saveScrollPosition}
-            className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-blue-600"
-          >
-            Prijava
-          </Link>
+          <nav aria-label="Korisnički izbornik">
+            <Link
+              to={loginPath}
+              onClick={saveScrollPosition}
+              className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-blue-600"
+            >
+              Prijava
+            </Link>
+          </nav>
         ) : null}
       </div>
     </header>

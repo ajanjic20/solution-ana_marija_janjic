@@ -80,9 +80,13 @@ export function ProductDetailPage() {
     return (
       <main className="min-h-screen bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 py-8">
-          <p className="text-center text-slate-600">
-            Učitavanje detalja proizvoda...
-          </p>
+        <p
+          className="text-center text-slate-600"
+          role="status"
+          aria-live="polite"
+        >
+          Učitavanje detalja proizvoda...
+        </p>
         </div>
       </main>
     );
@@ -92,7 +96,10 @@ export function ProductDetailPage() {
     return (
       <main className="min-h-screen bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 py-8">
-          <p className="text-center font-bold text-red-600">
+          <p
+            className="text-center font-bold text-red-600"
+            role="alert"
+          >
             {error ?? "Proizvod nije pronađen."}
           </p>
 
