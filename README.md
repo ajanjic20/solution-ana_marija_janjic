@@ -14,3 +14,7 @@ Product catalogue made with React, TypeScript and Tailwind CSS.
 
 npm install
 npm run dev
+
+## Tests
+
+npm run test
