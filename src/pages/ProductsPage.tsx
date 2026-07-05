@@ -6,8 +6,6 @@ import {
   searchProducts,
 } from "../api/productsApi";
 import { FavoriteButton } from "../components/FavoriteButton";
-import { useAuth } from "../context/AuthContext";
-import { useFavorites } from "../context/FavoritesContext";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import type { Category, Product } from "../types/product";
 
@@ -95,9 +93,6 @@ export function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
-
-  const { isAuthenticated } = useAuth();
-  const { addFavorite } = useFavorites();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -204,30 +199,6 @@ export function ProductsPage() {
       isCurrentRequest = false;
     };
   }, [searchQuery, reloadKey]);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      return;
-    }
-
-    const pendingProduct = sessionStorage.getItem(
-      "pending-favorite-product",
-    );
-
-    if (!pendingProduct) {
-      return;
-    }
-
-    try {
-      const product = JSON.parse(pendingProduct) as Product;
-
-      if (Number.isInteger(product.id)) {
-        addFavorite(product);
-      }
-    } finally {
-      sessionStorage.removeItem("pending-favorite-product");
-    }
-  }, [addFavorite, isAuthenticated]);
 
   const normalizedSearchQuery = searchQuery.toLocaleLowerCase();
 

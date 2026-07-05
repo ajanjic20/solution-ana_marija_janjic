@@ -43,7 +43,7 @@ export function Header() {
 
   return (
     <header className="bg-slate-50">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 pt-8 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 pt-8 sm:px-6 lg:px-8">
         <Link
           to="/products"
           className="text-slate-950 transition hover:text-blue-600 focus-visible:outline-2 focus-visible:outline-blue-600"
@@ -60,7 +60,7 @@ export function Header() {
         </Link>
 
         {isAuthenticated && user ? (
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap justify-end gap-2 sm:gap-3">
             <span className="hidden text-sm text-slate-600 sm:block">
               Bok, {user.firstName}
             </span>

@@ -31,9 +31,10 @@ function renderProtectedRoute() {
 }
 
 describe("ProtectedRoute", () => {
-  beforeEach(() => {
+    beforeEach(() => {
     vi.clearAllMocks();
-  });
+    sessionStorage.clear();
+    });
 
   it("redirects a guest user to the login page", () => {
     authMock.useAuth.mockReturnValue({

@@ -56,6 +56,26 @@ function saveFavorites(
   );
 }
 
+function getPendingFavorite(): Product | null {
+  const storedProduct = sessionStorage.getItem(
+    "pending-favorite-product",
+  );
+
+  if (!storedProduct) {
+    return null;
+  }
+
+  try {
+    const product = JSON.parse(storedProduct) as Product;
+
+    return Number.isInteger(product.id) ? product : null;
+  } catch {
+    return null;
+  } finally {
+    sessionStorage.removeItem("pending-favorite-product");
+  }
+}
+
 export function FavoritesProvider({
   children,
 }: {
@@ -72,7 +92,27 @@ export function FavoritesProvider({
       return;
     }
 
-    setFavorites(readFavorites(userId));
+    const storedFavorites = readFavorites(userId);
+    const pendingFavorite = getPendingFavorite();
+
+    if (!pendingFavorite) {
+      setFavorites(storedFavorites);
+      return;
+    }
+
+    const alreadyExists = storedFavorites.some(
+      (favorite) => favorite.id === pendingFavorite.id,
+    );
+
+    const nextFavorites = alreadyExists
+      ? storedFavorites
+      : [pendingFavorite, ...storedFavorites];
+
+    if (!alreadyExists) {
+      saveFavorites(userId, nextFavorites);
+    }
+
+    setFavorites(nextFavorites);
   }, [userId]);
 
   const value = useMemo<FavoritesContextValue>(() => {
