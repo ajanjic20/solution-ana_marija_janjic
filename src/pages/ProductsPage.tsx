@@ -5,6 +5,9 @@ import {
   getCategories,
   searchProducts,
 } from "../api/productsApi";
+import { FavoriteButton } from "../components/FavoriteButton";
+import { useAuth } from "../context/AuthContext";
+import { useFavorites } from "../context/FavoritesContext";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import type { Category, Product } from "../types/product";
 
@@ -92,6 +95,9 @@ export function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+
+  const { isAuthenticated } = useAuth();
+  const { addFavorite } = useFavorites();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -198,6 +204,30 @@ export function ProductsPage() {
       isCurrentRequest = false;
     };
   }, [searchQuery, reloadKey]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    const pendingProduct = sessionStorage.getItem(
+      "pending-favorite-product",
+    );
+
+    if (!pendingProduct) {
+      return;
+    }
+
+    try {
+      const product = JSON.parse(pendingProduct) as Product;
+
+      if (Number.isInteger(product.id)) {
+        addFavorite(product);
+      }
+    } finally {
+      sessionStorage.removeItem("pending-favorite-product");
+    }
+  }, [addFavorite, isAuthenticated]);
 
   const normalizedSearchQuery = searchQuery.toLocaleLowerCase();
 
@@ -363,13 +393,9 @@ export function ProductsPage() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pb-8 pt-3 sm:px-6 lg:px-8">
         <header className="mb-8 border-b border-slate-200 pb-7">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-            Proizvodi
-          </h1>
-
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+          <p className="max-w-2xl text-sm leading-6 text-slate-600">
             Pronađi proizvode po nazivu, kategoriji ili cijeni.
           </p>
 
@@ -416,7 +442,7 @@ export function ProductsPage() {
               >
                 <option value="">Sve kategorije</option>
 
-                {categories.map((category) => (
+                {categories.map((category: Category) => (
                   <option key={category.slug} value={category.slug}>
                     {category.name}
                   </option>
@@ -530,13 +556,17 @@ export function ProductsPage() {
         {!isLoading && !error && products.length > 0 && (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
-              <Link
+              <article
                 key={product.id}
-                to={getProductDetailsPath(product.id)}
-                onClick={saveScrollPosition}
-                className="group block overflow-hidden rounded-sm border border-slate-200 bg-white text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-blue-600"
+                className="group relative overflow-hidden rounded-sm border border-slate-200 bg-white text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md"
               >
-                <article>
+                <FavoriteButton product={product} />
+
+                <Link
+                  to={getProductDetailsPath(product.id)}
+                  onClick={saveScrollPosition}
+                  className="block focus-visible:outline-2 focus-visible:outline-blue-600"
+                >
                   <div className="border-b border-slate-100 bg-white">
                     <img
                       src={product.thumbnail}
@@ -564,8 +594,8 @@ export function ProductsPage() {
                       Pogledaj detalje →
                     </p>
                   </div>
-                </article>
-              </Link>
+                </Link>
+              </article>
             ))}
           </div>
         )}
