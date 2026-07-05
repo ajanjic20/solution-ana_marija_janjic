@@ -8,6 +8,7 @@ import {
 import { FavoriteButton } from "../components/FavoriteButton";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import type { Category, Product } from "../types/product";
+import { ProductSkeleton } from "../components/ProductSkeleton";
 
 const PRODUCTS_PER_PAGE = 20;
 
@@ -484,13 +485,7 @@ export function ProductsPage() {
         </section>
 
         {isLoading ? (
-          <p
-            className="mb-8 text-center text-slate-600"
-            role="status"
-            aria-live="polite"
-          >
-            Učitavanje proizvoda...
-          </p>
+          <ProductSkeleton />
         ) : error ? (
           <div
             className="mb-8 border border-red-200 bg-red-50 p-5 text-center"
